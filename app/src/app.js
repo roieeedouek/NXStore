@@ -283,6 +283,26 @@ function openShot(i) {
 }
 const closeShot = () => { $("#lightbox").hidden = true; };
 
+// Save the current screenshot. Falls back to opening it in a browser tab when the
+// image can't be fetched directly (e.g. the host doesn't allow cross-origin reads).
+async function saveShot() {
+  const src = state.shots[state.shotIndex];
+  if (!src) return;
+  const name = decodeURIComponent(src.split("/").pop().split("?")[0]) || "screenshot.jpg";
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const url = URL.createObjectURL(await res.blob());
+    const a = Object.assign(document.createElement("a"), { href: url, download: name });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch {
+    openUrl(src);
+  }
+}
+
 // ---------- misc ----------
 function toast(text, error = false) {
   const el = document.createElement("div");
@@ -327,10 +347,25 @@ async function init() {
   showView(prefs("view", "library"));
 
   let searchTimer;
-  $("#search").addEventListener("input", (e) => {
+  const search = $("#search"), searchClear = $("#searchClear");
+  const syncClear = () => { searchClear.hidden = !search.value; };
+  const clearSearch = () => {
+    clearTimeout(searchTimer);
+    search.value = "";
+    syncClear();
+    state.query = "";
+    applyView();
+    search.focus();
+  };
+  search.addEventListener("input", (e) => {
+    syncClear();
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => { state.query = e.target.value.trim(); applyView(); }, 120);
   });
+  search.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && search.value) { e.preventDefault(); clearSearch(); }
+  });
+  searchClear.addEventListener("click", clearSearch);
   $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; save("sort", state.sort); applyView(); });
   $("#hideDemos").addEventListener("change", (e) => { state.hideDemos = e.target.checked; save("hideDemos", state.hideDemos); applyView(); });
   $("#region").addEventListener("change", (e) => { state.region = e.target.value; save("region", state.region); state.games = []; loadCatalog(); });
@@ -375,6 +410,7 @@ async function init() {
   lb.addEventListener("click", (e) => {
     if (e.target.closest(".prev")) return openShot(state.shotIndex - 1);
     if (e.target.closest(".next")) return openShot(state.shotIndex + 1);
+    if (e.target.closest(".lb-save")) return saveShot();
     closeShot();
   });
 
