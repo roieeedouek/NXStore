@@ -1,0 +1,257 @@
+# Stock system libraries bundled in the v1.0.8 AppImage (not committed).
+# size  sha256-prefix  path
+   symlink                    /usr/lib/im-am-et.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-am-et.so
+   symlink                    /usr/lib/im-broadway.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-broadway.so
+   symlink                    /usr/lib/im-cedilla.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-cedilla.so
+   symlink                    /usr/lib/im-cyrillic-translit.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-cyrillic-translit.so
+   symlink                    /usr/lib/im-inuktitut.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-inuktitut.so
+   symlink                    /usr/lib/im-ipa.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ipa.so
+   symlink                    /usr/lib/im-multipress.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-multipress.so
+   symlink                    /usr/lib/im-thai.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-thai.so
+   symlink                    /usr/lib/im-ti-er.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ti-er.so
+   symlink                    /usr/lib/im-ti-et.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ti-et.so
+   symlink                    /usr/lib/im-viqr.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-viqr.so
+   symlink                    /usr/lib/im-wayland.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-wayland.so
+   symlink                    /usr/lib/im-waylandgtk.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-waylandgtk.so
+   symlink                    /usr/lib/im-xim.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-xim.so
+     22096  e03e360d5568858a  /usr/lib/libXau.so.6
+     18224  ba3dbe3e4c6eb294  /usr/lib/libXcomposite.so.1
+     48480  34f2d3946d432b1c  /usr/lib/libXcursor.so.1
+     18064  da576192890663aa  /usr/lib/libXdamage.so.1
+     30848  50d503592dc8c27d  /usr/lib/libXdmcp.so.6
+     86448  c4503887f76f01bc  /usr/lib/libXext.so.6
+     35216  eeecd40afe4e0e87  /usr/lib/libXfixes.so.3
+     81240  a24b36eada9033da  /usr/lib/libXi.so.6
+     22144  a0195af6ee6bd765  /usr/lib/libXinerama.so.1
+     52192  f7f58e2d938269b4  /usr/lib/libXrandr.so.2
+     51960  ba3be6658fbda4e9  /usr/lib/libXrender.so.1
+    179352  54b7a5006e3dd048  /usr/lib/libatk-1.0.so.0
+    238680  630ac6d70a6e9c3c  /usr/lib/libatk-bridge-2.0.so.0
+     36280  ab38556b9414e5b2  /usr/lib/libatomic.so.1
+    251608  81f9cb463f76b84f  /usr/lib/libatspi.so.0
+     82712  1138c674b68b111a  /usr/lib/libavahi-client.so.3
+     57272  180b0daeacaf2b20  /usr/lib/libavahi-common.so.3
+    226312  76869353a17ed49d  /usr/lib/libblkid.so.1
+    140760  fe9e21384754e557  /usr/lib/libbrotlicommon.so.1
+     55184  2398a577eaa6549b  /usr/lib/libbrotlidec.so.1
+     93920  1cbb30a07c086a30  /usr/lib/libbsd.so.0
+     79912  a297973aab916a8b  /usr/lib/libbz2.so.1.0
+     47992  5fdfb14a61e66aa8  /usr/lib/libcairo-gobject.so.2
+   1223776  285439bd633c2fd1  /usr/lib/libcairo.so.2
+     43472  15a95457d402caee  /usr/lib/libcap.so.2
+    353328  25e56ebcede56a11  /usr/lib/libcolord.so.2
+    661720  eeb788fea2755574  /usr/lib/libcups.so.2
+     38976  63c16eaaf630a0df  /usr/lib/libdatrie.so.1
+    332128  39e679fdc3662f90  /usr/lib/libdbus-1.so.3
+    145280  c66023578aa1f236  /usr/lib/libdeflate.so.0
+    712304  e8d8f8ced693dbb8  /usr/lib/libdw.so.1
+    122288  b3379cee0852b16e  /usr/lib/libelf.so.1
+     60832  8eda3dd3c10d1e9f  /usr/lib/libenchant-2.so.2
+   1364552  6af372add3260a39  /usr/lib/libepoxy.so.0
+    118584  705d7f32d3342dbe  /usr/lib/libevdev.so.2
+     51592  1ae3d582f75ac136  /usr/lib/libffi.so.8
+   1304424  829a6867aea8f2ad  /usr/lib/libgcrypt.so.20
+   1110008  c667e911bf6a6f9a  /usr/lib/libgdk-3.so.0
+    202464  67c2feb2e01450e8  /usr/lib/libgdk_pixbuf-2.0.so
+    202464  67c2feb2e01450e8  /usr/lib/libgdk_pixbuf-2.0.so.0
+    202464  67c2feb2e01450e8  /usr/lib/libgdk_pixbuf-2.0.so.0.4200.8
+   2012720  ef99b5ca4c2fa2e8  /usr/lib/libgio-2.0.so
+   2012720  ef99b5ca4c2fa2e8  /usr/lib/libgio-2.0.so.0
+   2012720  ef99b5ca4c2fa2e8  /usr/lib/libgio-2.0.so.0.7200.4
+   1323160  cb923731152b3b1d  /usr/lib/libglib-2.0.so.0
+     26688  4ca1ca689dcbca6f  /usr/lib/libgmodule-2.0.so.0
+   2062056  1333e5627c3e0c9c  /usr/lib/libgnutls.so.30
+    404920  e11359789e91e21c  /usr/lib/libgobject-2.0.so
+    404920  e11359789e91e21c  /usr/lib/libgobject-2.0.so.0
+    404920  e11359789e91e21c  /usr/lib/libgobject-2.0.so.0.7200.4
+    162520  10f747159011c90f  /usr/lib/libgraphite2.so.3
+    350968  4bfacc36cf3f09f6  /usr/lib/libgssapi_krb5.so.2
+     26904  2ade0378c1cedfa2  /usr/lib/libgstallocators-1.0.so.0
+     91848  ef7e2a90396a6893  /usr/lib/libgstapp-1.0.so.0
+    547696  a5910179941c6a30  /usr/lib/libgstaudio-1.0.so.0
+    566056  119aa6f34cb7e7a3  /usr/lib/libgstbase-1.0.so.0
+     46928  9ce73e7b1df4f4af  /usr/lib/libgstfft-1.0.so.0
+    578760  9e7ad6e69d3d9a0b  /usr/lib/libgstgl-1.0.so.0
+    292128  2091c064089c194d  /usr/lib/libgstpbutils-1.0.so.0
+   1430064  578881fac71165c3  /usr/lib/libgstreamer-1.0.so.0
+    279976  9de3e722a081d9bd  /usr/lib/libgsttag-1.0.so.0
+    829640  63b2f084bf55db59  /usr/lib/libgstvideo-1.0.so.0
+   8726632  51d525269dce031f  /usr/lib/libgtk-3.so.0
+     59032  60cab2f9d30286d0  /usr/lib/libgudev-1.0.so.0
+     18456  571dfc7be9ac69da  /usr/lib/libharfbuzz-icu.so.0
+    301272  5cf6f6da565d6f81  /usr/lib/libhogweed.so.6
+     26368  dcaebea28144e02d  /usr/lib/libhyphen.so.0
+  29480008  26d500c5e86b0eea  /usr/lib/libicudata.so.70
+   3803408  daf3c31de75b7d7f  /usr/lib/libicui18n.so.70
+   2214072  97d23b9a4c6771fa  /usr/lib/libicuuc.so.70
+    133256  a8e6f7c0d5770294  /usr/lib/libidn2.so.0
+  33712504  d57485a8e6af93aa  /usr/lib/libjavascriptcoregtk-4.1.so.0
+     71608  e19649c02e456308  /usr/lib/libjbig.so.0
+    528120  21661bf728676700  /usr/lib/libjpeg.so.8
+    188376  d7a53d5e9b3bc81d  /usr/lib/libk5crypto.so.3
+     27080  7fa5a3703b6f3f7b  /usr/lib/libkeyutils.so.1
+    851904  489eabdb7d0b9832  /usr/lib/libkrb5.so.3
+     57168  3b3d5795290dd505  /usr/lib/libkrb5support.so.0
+    402496  f01b686942df125a  /usr/lib/liblcms2.so.2
+    130528  53e1c45b6ead0d37  /usr/lib/liblz4.so.1
+    175960  cd76ef78fbe91835  /usr/lib/liblzma.so.5
+    197832  c4574f8d43e69b7f  /usr/lib/libmanette-0.2.so.0
+     51392  079150ecbbb729a5  /usr/lib/libmd.so.0
+    284064  62f822f8091bd99f  /usr/lib/libmount.so.1
+    296104  250d19ee04109927  /usr/lib/libnettle.so.8
+    174816  5696eaac037a57e6  /usr/lib/libnghttp2.so.14
+    549176  fff443db2b5a22c9  /usr/lib/liborc-0.4.so.0
+   1291312  d3967fbc00699270  /usr/lib/libp11-kit.so.0
+    437728  3cfb7545ad738a33  /usr/lib/libpango-1.0.so
+    437728  3cfb7545ad738a33  /usr/lib/libpango-1.0.so.0
+    437728  3cfb7545ad738a33  /usr/lib/libpango-1.0.so.0.5000.6
+     76440  01ef06a5c8c3c3d9  /usr/lib/libpangocairo-1.0.so
+     76440  01ef06a5c8c3c3d9  /usr/lib/libpangocairo-1.0.so.0
+     76440  01ef06a5c8c3c3d9  /usr/lib/libpangocairo-1.0.so.0.5000.6
+    116912  c6f76d637f208026  /usr/lib/libpangoft2-1.0.so
+    116912  c6f76d637f208026  /usr/lib/libpangoft2-1.0.so.0
+    116912  c6f76d637f208026  /usr/lib/libpangoft2-1.0.so.0.5000.6
+    481392  9aa7df356e0ae1a6  /usr/lib/libpcre.so.3
+    617880  ebc167f5879e25bc  /usr/lib/libpcre2-8.so.0
+   symlink                    /usr/lib/libpixbufloader-ani.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-ani.so
+   symlink                    /usr/lib/libpixbufloader-bmp.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+   symlink                    /usr/lib/libpixbufloader-gif.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-gif.so
+   symlink                    /usr/lib/libpixbufloader-icns.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-icns.so
+   symlink                    /usr/lib/libpixbufloader-ico.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-ico.so
+   symlink                    /usr/lib/libpixbufloader-pnm.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-pnm.so
+   symlink                    /usr/lib/libpixbufloader-qtif.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-qtif.so
+   symlink                    /usr/lib/libpixbufloader-svg.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   symlink                    /usr/lib/libpixbufloader-tga.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-tga.so
+   symlink                    /usr/lib/libpixbufloader-tiff.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-tiff.so
+   symlink                    /usr/lib/libpixbufloader-xbm.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xbm.so
+   symlink                    /usr/lib/libpixbufloader-xpm.so -> x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xpm.so
+    701968  4ca6717bedbbb0df  /usr/lib/libpixman-1.so.0
+    244792  2c76f5d4175d411d  /usr/lib/libpng16.so.16
+   symlink                    /usr/lib/libprintbackend-cups.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-cups.so
+   symlink                    /usr/lib/libprintbackend-file.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-file.so
+   symlink                    /usr/lib/libprintbackend-lpr.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-lpr.so
+   symlink                    /usr/lib/libprintbackend-test.so -> x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-test.so
+     79936  2a2e490ffe8a0dab  /usr/lib/libpsl.so.5
+  10963080  9fc874ecbfe6fdf3  /usr/lib/librsvg-2.so
+  10963080  9fc874ecbfe6fdf3  /usr/lib/librsvg-2.so.2
+  10963080  9fc874ecbfe6fdf3  /usr/lib/librsvg-2.so.2.48.0
+    129128  0cb009b2bbe2a689  /usr/lib/libseccomp.so.2
+    421864  ee97c919812773e9  /usr/lib/libsecret-1.so.0
+    175912  2b6c65aa0c8df657  /usr/lib/libselinux.so.1
+    635800  2cb93d9fb132840a  /usr/lib/libsoup-3.0.so.0
+   1391448  205a2014ea6b4638  /usr/lib/libsqlite3.so.0
+    830312  62ce07b14c0902b3  /usr/lib/libsystemd.so.0
+     96712  28a1d44689c3e88c  /usr/lib/libtasn1.so.6
+     47944  6872f0d6a11a0388  /usr/lib/libthai.so.0
+    565248  73684be60788b903  /usr/lib/libtiff.so.5
+    173152  32ee039d1b29a747  /usr/lib/libudev.so.1
+   1761240  a821050079d149d6  /usr/lib/libunistring.so.2
+     68616  d95b1d2df35c43dd  /usr/lib/libunwind.so.8
+     69128  43160e2723f96425  /usr/lib/libwayland-client.so.0
+     38792  d0c89cdc33c1d1e2  /usr/lib/libwayland-cursor.so.0
+     17784  4236392d167b5d0a  /usr/lib/libwayland-egl.so.1
+     91184  816549129406a2ba  /usr/lib/libwayland-server.so.0
+  89985064  8c1595337fa4eab0  /usr/lib/libwebkit2gtk-4.1.so.0
+    437368  95763d8b3952b9a2  /usr/lib/libwebp.so.7
+     22384  8364d89680436372  /usr/lib/libwebpdemux.so.2
+     51528  96ef4b9d75cdbae2  /usr/lib/libwebpmux.so.3
+     18240  d90cced364628632  /usr/lib/libwoff2common.so.1.0.2
+     48384  94c6bb79e0487162  /usr/lib/libwoff2dec.so.1.0.2
+     86784  799fb8be785395d2  /usr/lib/libxcb-randr.so.0
+     66872  c3ae0c57cb6ee956  /usr/lib/libxcb-render.so.0
+     18336  b6bad6bc077d4b3f  /usr/lib/libxcb-shm.so.0
+    290776  63c85dac7bcd5947  /usr/lib/libxkbcommon.so.0
+   2008672  bca1853b91a30f4b  /usr/lib/libxml2.so.2
+    281152  de5bfeb22f02b11a  /usr/lib/libxslt.so.1
+    858784  c3e0f4a7b242b6fd  /usr/lib/libzstd.so.1
+     85154  d586429d1a22cba0  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/io-wmf.a
+     26816  cdfc4691ba576a83  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-ani.so
+     26400  2a71b3d855838ce5  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+     39264  35dfb4ca004d2941  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-gif.so
+     18336  9f6ff28b7b81ccf9  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-icns.so
+     30744  b1140de13c340da4  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-ico.so
+     22232  98eea21944248e1a  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-pnm.so
+     22328  bb6071ca77460a7a  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-qtif.so
+     18032  50f452b73cc093c5  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+     22440  21791a13638ac314  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-tga.so
+     30912  abfa52b143bc4b26  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-tiff.so
+     22392  af7e0a083ccfd7a1  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xbm.so
+     39040  0e0f1f34d3a0150f  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xpm.so
+      2316  adca1a543fdf1f06  /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+    137504  38bb3406cd1251e9  /usr/lib/x86_64-linux-gnu/gio/modules/libgiognutls.so
+     30272  4f1f541de0c3b37f  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-am-et.so
+     18064  17ba085771f1591b  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-broadway.so
+     17976  03bbe8a84350175e  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-cedilla.so
+     18000  cfb552adcce2c292  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-cyrillic-translit.so
+     22088  9181e071d7bf1eb2  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-inuktitut.so
+     17968  db9eba6f15fd578e  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ipa.so
+     22792  7938041dbf511b87  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-multipress.so
+     18416  c60db51a43a013d6  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-thai.so
+     30272  697affea989a437f  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ti-er.so
+     30272  95fd4fd50f03c6b9  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-ti-et.so
+     22080  044d3dbfa46e2d21  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-viqr.so
+     27120  1bdec77760dc3b8c  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-wayland.so
+     26944  30a8396d820b5a00  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-waylandgtk.so
+     44408  954efddd28f14a7d  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules/im-xim.so
+      1529  0c65a016eb215a64  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/immodules.cache
+    170048  8449a83b7278b8be  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-cups.so
+     36552  1a804185b438d28d  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-file.so
+     27744  6ca035101b61cfef  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-lpr.so
+     27728  bc2c6936b6eda7eb  /usr/lib/x86_64-linux-gnu/gtk-3.0/3.0.0/printbackends/libprintbackend-test.so
+     22000  044ffa1879fb55bb  /usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/WebKitNetworkProcess
+     21992  2a962aaf301641ff  /usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/WebKitWebProcess
+     17872  e7e6dab578e99b2d  /usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/injected-bundle/libwebkit2gtkinjectedbundle.so
+      2228  832ed535ff3c3d02  /usr/share/doc/libbz2-1.0/copyright
+      4631  a906104348c333a9  /usr/share/doc/libcap2/copyright
+     19464  151007a06fd9409b  /usr/share/doc/libdbus-1-3/copyright
+      5480  4509ce25586e99da  /usr/share/doc/libgdk-pixbuf-2.0-0/copyright
+      5480  4509ce25586e99da  /usr/share/doc/libgdk-pixbuf-2.0-dev/copyright
+      4119  607a2dbcf41b8273  /usr/share/doc/libglib2.0-0/copyright
+      4119  607a2dbcf41b8273  /usr/share/doc/libglib2.0-dev/copyright
+      2104  6ab5c541723d8211  /usr/share/doc/libkeyutils1/copyright
+     15465  a2dc8fac0f496e1c  /usr/share/doc/liblzma5/copyright
+     53108  c0aef71da2cfce29  /usr/share/doc/libpango-1.0-0/copyright
+     53108  c0aef71da2cfce29  /usr/share/doc/libpango1.0-dev/copyright
+     53108  c0aef71da2cfce29  /usr/share/doc/libpangocairo-1.0-0/copyright
+     53108  c0aef71da2cfce29  /usr/share/doc/libpangoft2-1.0-0/copyright
+      2765  ac9276490d2fa167  /usr/share/doc/libpcre3/copyright
+     40400  1d46e8e95ca3cbc9  /usr/share/doc/librsvg2-2/copyright
+     40400  1d46e8e95ca3cbc9  /usr/share/doc/librsvg2-dev/copyright
+      3131  641806738b0c6a3d  /usr/share/doc/libselinux1/copyright
+       342  7aec3161e0146744  /usr/share/glib-2.0/schemas/10_gsettings-desktop-schemas.gschema.override
+      2916  1a6f092697940a50  /usr/share/glib-2.0/schemas/gschema.dtd
+     38626  0681c221db5357f1  /usr/share/glib-2.0/schemas/gschemas.compiled
+       845  6e67c6d900b0e698  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.applications.gschema.xml
+       828  f471028deedc0770  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.gschema.xml
+       422  500f8f2deda68673  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.interface.gschema.xml
+      4897  429b25000a947e1b  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.keyboard.gschema.xml
+      9380  0316beb1020bf0e1  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.magnifier.gschema.xml
+      2907  2409903ede1c85e8  /usr/share/glib-2.0/schemas/org.gnome.desktop.a11y.mouse.gschema.xml
+      1841  f6a6be999af5d5ed  /usr/share/glib-2.0/schemas/org.gnome.desktop.app-folders.gschema.xml
+      2612  13f2de7840224b1c  /usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml
+       427  d153ebb1fbf3b723  /usr/share/glib-2.0/schemas/org.gnome.desktop.calendar.gschema.xml
+       439  db8f91d8966e2457  /usr/share/glib-2.0/schemas/org.gnome.desktop.datetime.gschema.xml
+      3092  ba0b55abfbf2a6d3  /usr/share/glib-2.0/schemas/org.gnome.desktop.default-applications.gschema.xml
+      6564  c33bef4f89b67716  /usr/share/glib-2.0/schemas/org.gnome.desktop.enums.xml
+      2549  b280a6620302845f  /usr/share/glib-2.0/schemas/org.gnome.desktop.input-sources.gschema.xml
+     12476  3504b4e2f01a374c  /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml
+      3454  7d977d0932a4062c  /usr/share/glib-2.0/schemas/org.gnome.desktop.lockdown.gschema.xml
+      2605  f4e22d9e928314d4  /usr/share/glib-2.0/schemas/org.gnome.desktop.media-handling.gschema.xml
+      2838  b7e983b5fa4cedcc  /usr/share/glib-2.0/schemas/org.gnome.desktop.notifications.gschema.xml
+     13636  a75b066c4c77c097  /usr/share/glib-2.0/schemas/org.gnome.desktop.peripherals.gschema.xml
+      4907  304f26f2030d538f  /usr/share/glib-2.0/schemas/org.gnome.desktop.privacy.gschema.xml
+      6191  d6b5f96c421da953  /usr/share/glib-2.0/schemas/org.gnome.desktop.screensaver.gschema.xml
+      1907  9efd368948d891c5  /usr/share/glib-2.0/schemas/org.gnome.desktop.search-providers.gschema.xml
+       668  462b3b4fe456aecd  /usr/share/glib-2.0/schemas/org.gnome.desktop.session.gschema.xml
+      1055  ff7dcae2b2b3d610  /usr/share/glib-2.0/schemas/org.gnome.desktop.sound.gschema.xml
+       600  20246fc5002a9892  /usr/share/glib-2.0/schemas/org.gnome.desktop.thumbnail-cache.gschema.xml
+       866  899bfc15c3100516  /usr/share/glib-2.0/schemas/org.gnome.desktop.thumbnailers.gschema.xml
+     13631  58036d83de3758f5  /usr/share/glib-2.0/schemas/org.gnome.desktop.wm.keybindings.gschema.xml
+     12908  197e14e54d24a7d4  /usr/share/glib-2.0/schemas/org.gnome.desktop.wm.preferences.gschema.xml
+       448  5b1e65629a77dcd2  /usr/share/glib-2.0/schemas/org.gnome.system.locale.gschema.xml
+      1159  3fe90ebe8c851340  /usr/share/glib-2.0/schemas/org.gnome.system.location.gschema.xml
+      6347  ccf9767c5a47f237  /usr/share/glib-2.0/schemas/org.gnome.system.proxy.gschema.xml
+       931  e476913ef61e6719  /usr/share/glib-2.0/schemas/org.gtk.Settings.ColorChooser.gschema.xml
+       833  de0685fdc2f6e890  /usr/share/glib-2.0/schemas/org.gtk.Settings.Debug.gschema.xml
+       623  22aba28a5a78745d  /usr/share/glib-2.0/schemas/org.gtk.Settings.EmojiChooser.gschema.xml
+      6212  c7089f41d22b3854  /usr/share/glib-2.0/schemas/org.gtk.Settings.FileChooser.gschema.xml

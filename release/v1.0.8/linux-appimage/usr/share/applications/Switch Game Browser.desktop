@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=
+Exec=switch-game-browser
+StartupWMClass=switch-game-browser
+Icon=switch-game-browser
+Name=Switch Game Browser
+Terminal=false
+Type=Application
