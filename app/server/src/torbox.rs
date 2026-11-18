@@ -1,8 +1,8 @@
 //! Minimal TorBox client: log in with an API key, add a magnet or web link,
 //! list transfers with their status, and download finished ones to disk.
 //!
-//! The API key stays in the Rust process and in a file in the app config
-//! folder; the webview never sees it after login.
+//! The API key stays in the server process and in a file in the config
+//! folder; the browser page never sees it after login.
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -12,7 +12,7 @@ use std::time::Duration;
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use tauri::{AppHandle, Emitter, Manager, State};
+use crate::Ctx;
 use tokio::io::AsyncWriteExt;
 
 const API: &str = "https://api.torbox.app/v1/api";
@@ -87,8 +87,8 @@ fn client() -> Result<reqwest::Client, String> {
         .map_err(|e| e.to_string())
 }
 
-fn key_file(app: &AppHandle) -> Result<PathBuf, String> {
-    Ok(app.path().app_config_dir().map_err(|e| e.to_string())?.join("torbox.json"))
+fn key_file(ctx: &Ctx) -> Result<PathBuf, String> {
+    Ok(ctx.config_dir.join("torbox.json"))
 }
 
 fn current_key(state: &TorBoxState) -> Result<String, String> {
@@ -145,14 +145,13 @@ async fn fetch_account(key: &str) -> Result<Account, String> {
     })
 }
 
-#[tauri::command]
-pub async fn torbox_login(app: AppHandle, state: State<'_, TorBoxState>, api_key: String) -> Result<Account, String> {
+pub async fn torbox_login(ctx: &Ctx, api_key: String) -> Result<Account, String> {
     let key = api_key.trim().to_string();
     if key.is_empty() {
         return Err("Enter your TorBox API key".into());
     }
     let account = fetch_account(&key).await?;
-    let path = key_file(&app)?;
+    let path = key_file(ctx)?;
     if let Some(dir) = path.parent() {
         std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
     }
@@ -163,26 +162,24 @@ pub async fn torbox_login(app: AppHandle, state: State<'_, TorBoxState>, api_key
         use std::os::unix::fs::PermissionsExt;
         let _ = std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600));
     }
-    *state.key.lock().unwrap() = Some(key);
+    *ctx.torbox.key.lock().unwrap() = Some(key);
     Ok(account)
 }
 
 /// Restores a saved key at startup. Returns `None` when there is no key.
-#[tauri::command]
-pub async fn torbox_session(app: AppHandle, state: State<'_, TorBoxState>) -> Result<Option<Account>, String> {
-    let saved = key_file(&app)
+pub async fn torbox_session(ctx: &Ctx) -> Result<Option<Account>, String> {
+    let saved = key_file(ctx)
         .ok()
         .and_then(|p| std::fs::read(p).ok())
         .and_then(|b| serde_json::from_slice::<SavedKey>(&b).ok());
     let Some(saved) = saved else { return Ok(None) };
-    *state.key.lock().unwrap() = Some(saved.api_key.clone());
+    *ctx.torbox.key.lock().unwrap() = Some(saved.api_key.clone());
     fetch_account(&saved.api_key).await.map(Some)
 }
 
-#[tauri::command]
-pub fn torbox_logout(app: AppHandle, state: State<'_, TorBoxState>) -> Result<(), String> {
-    *state.key.lock().unwrap() = None;
-    if let Ok(p) = key_file(&app) {
+pub fn torbox_logout(ctx: &Ctx) -> Result<(), String> {
+    *ctx.torbox.key.lock().unwrap() = None;
+    if let Ok(p) = key_file(ctx) {
         let _ = std::fs::remove_file(p);
     }
     Ok(())
@@ -206,9 +203,8 @@ pub struct Added {
     id: Option<u64>,
 }
 
-#[tauri::command]
-pub async fn torbox_add(state: State<'_, TorBoxState>, link: String) -> Result<Added, String> {
-    add_link(&current_key(&state)?, &link).await
+pub async fn torbox_add(ctx: &Ctx, link: String) -> Result<Added, String> {
+    add_link(&current_key(&ctx.torbox)?, &link).await
 }
 
 async fn add_link(key: &str, link: &str) -> Result<Added, String> {
@@ -266,9 +262,8 @@ fn to_transfer(kind: Kind, v: &Value) -> Option<Transfer> {
     })
 }
 
-#[tauri::command]
-pub async fn torbox_list(state: State<'_, TorBoxState>) -> Result<Vec<Transfer>, String> {
-    list_transfers(&current_key(&state)?).await
+pub async fn torbox_list(ctx: &Ctx) -> Result<Vec<Transfer>, String> {
+    list_transfers(&current_key(&ctx.torbox)?).await
 }
 
 async fn list_transfers(key: &str) -> Result<Vec<Transfer>, String> {
@@ -284,9 +279,8 @@ async fn list_transfers(key: &str) -> Result<Vec<Transfer>, String> {
     Ok(out)
 }
 
-#[tauri::command]
-pub async fn torbox_remove(state: State<'_, TorBoxState>, kind: Kind, id: u64) -> Result<(), String> {
-    remove_item(&current_key(&state)?, kind, id).await
+pub async fn torbox_remove(ctx: &Ctx, kind: Kind, id: u64) -> Result<(), String> {
+    remove_item(&current_key(&ctx.torbox)?, kind, id).await
 }
 
 async fn remove_item(key: &str, kind: Kind, id: u64) -> Result<(), String> {
@@ -352,18 +346,16 @@ fn filename_from_disposition(h: &str) -> Option<String> {
 
 /// Asks TorBox for a download link (a zip when there are several files) and
 /// streams it into the user's Downloads folder, emitting `torbox-download` events.
-#[tauri::command]
 pub async fn torbox_download(
-    app: AppHandle,
-    state: State<'_, TorBoxState>,
+    ctx: &Ctx,
     kind: Kind,
     id: u64,
     name: String,
     file_count: usize,
 ) -> Result<(), String> {
-    let key = current_key(&state)?;
+    let key = current_key(&ctx.torbox)?;
     let dl_key = format!("{}-{id}", kind.path());
-    if !state.downloading.lock().unwrap().insert(dl_key.clone()) {
+    if !ctx.torbox.downloading.lock().unwrap().insert(dl_key.clone()) {
         return Err("Already downloading".into());
     }
 
@@ -384,7 +376,7 @@ pub async fn torbox_download(
             .and_then(filename_from_disposition)
             .unwrap_or_else(|| if file_count != 1 { format!("{name}.zip") } else { name.clone() });
 
-        let dir = app.path().download_dir().map_err(|e| e.to_string())?;
+        let dir = ctx.download_dir.clone();
         tokio::fs::create_dir_all(&dir).await.map_err(|e| e.to_string())?;
         let dest = unique_path(&dir, &sanitize(&fname));
         let part = dest.with_extension(format!(
@@ -408,7 +400,7 @@ pub async fn torbox_download(
             received += chunk.len() as u64;
             if received - last > 1024 * 1024 {
                 last = received;
-                let _ = app.emit(
+                ctx.emit(
                     "torbox-download",
                     DownloadEvent { key: dl_key.clone(), received, total, done: false, error: None, path: None },
                 );
@@ -421,7 +413,7 @@ pub async fn torbox_download(
     }
     .await;
 
-    state.downloading.lock().unwrap().remove(&dl_key);
+    ctx.torbox.downloading.lock().unwrap().remove(&dl_key);
     let event = match &result {
         Ok((received, total, dest)) => DownloadEvent {
             key: dl_key,
@@ -433,7 +425,7 @@ pub async fn torbox_download(
         },
         Err(e) => DownloadEvent { key: dl_key, received: 0, total: None, done: true, error: Some(e.clone()), path: None },
     };
-    let _ = app.emit("torbox-download", event);
+    ctx.emit("torbox-download", event);
     result.map(|_| ())
 }
 

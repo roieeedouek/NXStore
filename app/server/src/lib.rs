@@ -3,7 +3,8 @@
 //! Downloads the public titledb metadata catalog for a region, slims it down
 //! to the fields the UI needs, and caches the result in the app data folder.
 
-mod torbox;
+pub mod server;
+pub mod torbox;
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -11,7 +12,36 @@ use std::time::{Duration, SystemTime};
 
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Emitter, Manager};
+use tokio::sync::broadcast;
+
+/// Shared server state: folders, the event channel and the TorBox session.
+pub struct Ctx {
+    pub cache_dir: PathBuf,
+    pub config_dir: PathBuf,
+    pub download_dir: PathBuf,
+    pub events: broadcast::Sender<Event>,
+    pub torbox: torbox::TorBoxState,
+}
+
+/// A server-sent event: `name` becomes the SSE event type, `data` its JSON body.
+#[derive(Clone)]
+pub struct Event {
+    pub name: &'static str,
+    pub data: String,
+}
+
+impl Ctx {
+    pub fn new(cache_dir: PathBuf, config_dir: PathBuf, download_dir: PathBuf) -> Self {
+        let (events, _) = broadcast::channel(256);
+        Ctx { cache_dir, config_dir, download_dir, events, torbox: Default::default() }
+    }
+
+    pub fn emit(&self, name: &'static str, payload: impl Serialize) {
+        if let Ok(data) = serde_json::to_string(&payload) {
+            let _ = self.events.send(Event { name, data }); // no listeners is fine
+        }
+    }
+}
 
 const CATALOG_BASE: &str = "https://raw.githubusercontent.com/blawar/titledb/master";
 const CACHE_MAX_AGE: Duration = Duration::from_secs(24 * 60 * 60);
@@ -93,9 +123,8 @@ fn now_secs() -> u64 {
         .unwrap_or(0)
 }
 
-fn cache_path(app: &AppHandle, region: &str) -> Result<PathBuf, String> {
-    let dir = app.path().app_cache_dir().map_err(|e| e.to_string())?;
-    Ok(dir.join(format!("catalog-{region}.json")))
+fn cache_path(ctx: &Ctx, region: &str) -> Result<PathBuf, String> {
+    Ok(ctx.cache_dir.join(format!("catalog-{region}.json")))
 }
 
 /// Base titles only: application IDs end in `000`. Updates (`800`) and DLC are skipped.
@@ -153,13 +182,13 @@ fn slim(raw: HashMap<String, RawTitle>) -> Vec<Game> {
     by_id.into_values().collect()
 }
 
-async fn read_cache(app: &AppHandle, region: &str) -> Option<CacheFile> {
-    let bytes = tokio::fs::read(cache_path(app, region).ok()?).await.ok()?;
+async fn read_cache(ctx: &Ctx, region: &str) -> Option<CacheFile> {
+    let bytes = tokio::fs::read(cache_path(ctx, region).ok()?).await.ok()?;
     serde_json::from_slice(&bytes).ok()
 }
 
-async fn write_cache(app: &AppHandle, cache: &CacheFile) -> Result<(), String> {
-    let path = cache_path(app, &cache.region)?;
+async fn write_cache(ctx: &Ctx, cache: &CacheFile) -> Result<(), String> {
+    let path = cache_path(ctx, &cache.region)?;
     if let Some(dir) = path.parent() {
         tokio::fs::create_dir_all(dir).await.map_err(|e| e.to_string())?;
     }
@@ -169,7 +198,7 @@ async fn write_cache(app: &AppHandle, cache: &CacheFile) -> Result<(), String> {
     tokio::fs::rename(&tmp, &path).await.map_err(|e| e.to_string())
 }
 
-async fn download(app: &AppHandle, region: &str) -> Result<Vec<Game>, String> {
+async fn download(ctx: &Ctx, region: &str) -> Result<Vec<Game>, String> {
     let url = format!("{CATALOG_BASE}/{region}.json");
     let client = reqwest::Client::builder()
         .user_agent(concat!("switch-library/", env!("CARGO_PKG_VERSION")))
@@ -193,15 +222,15 @@ async fn download(app: &AppHandle, region: &str) -> Result<Vec<Game>, String> {
         let received = body.len() as u64;
         if received - last_emit > 512 * 1024 {
             last_emit = received;
-            let _ = app.emit("catalog-progress", Progress { phase: "download", received, total });
+            ctx.emit("catalog-progress", Progress { phase: "download", received, total });
         }
     }
-    let _ = app.emit(
+    ctx.emit(
         "catalog-progress",
         Progress { phase: "parse", received: body.len() as u64, total },
     );
 
-    let raw: HashMap<String, RawTitle> = tauri::async_runtime::spawn_blocking(move || {
+    let raw: HashMap<String, RawTitle> = tokio::task::spawn_blocking(move || {
         serde_json::from_slice(&body).map_err(|e| format!("Catalog format not recognised: {e}"))
     })
     .await
@@ -211,12 +240,11 @@ async fn download(app: &AppHandle, region: &str) -> Result<Vec<Game>, String> {
 
 /// Returns the catalog for `region`, from cache when it is fresh unless `force` is set.
 /// Falls back to a stale cache when the network is unavailable.
-#[tauri::command]
-async fn fetch_catalog(app: AppHandle, region: String, force: bool) -> Result<Catalog, String> {
+pub async fn fetch_catalog(ctx: &Ctx, region: String, force: bool) -> Result<Catalog, String> {
     if !REGIONS.contains(&region.as_str()) {
         return Err(format!("Unknown region {region}"));
     }
-    let cached = read_cache(&app, &region).await;
+    let cached = read_cache(ctx, &region).await;
     if let Some(c) = &cached {
         let age = now_secs().saturating_sub(c.fetched_at);
         if !force && age < CACHE_MAX_AGE.as_secs() {
@@ -224,11 +252,11 @@ async fn fetch_catalog(app: AppHandle, region: String, force: bool) -> Result<Ca
             return Ok(Catalog { region, fetched_at: c.fetched_at, from_cache: true, games: c.games });
         }
     }
-    match download(&app, &region).await {
+    match download(ctx, &region).await {
         Ok(games) => {
             let cache = CacheFile { region: region.clone(), fetched_at: now_secs(), games };
             // A failed cache write should not hide a successful download.
-            if let Err(e) = write_cache(&app, &cache).await {
+            if let Err(e) = write_cache(ctx, &cache).await {
                 eprintln!("catalog cache write failed: {e}");
             }
             Ok(Catalog { region, fetched_at: cache.fetched_at, from_cache: false, games: cache.games })
@@ -240,35 +268,8 @@ async fn fetch_catalog(app: AppHandle, region: String, force: bool) -> Result<Ca
     }
 }
 
-#[tauri::command]
-fn regions() -> Vec<&'static str> {
+pub fn regions() -> Vec<&'static str> {
     REGIONS.to_vec()
-}
-
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            if let Some(w) = app.get_webview_window("main") {
-                let _ = w.unminimize();
-                let _ = w.set_focus();
-            }
-        }))
-        .plugin(tauri_plugin_opener::init())
-        .manage(torbox::TorBoxState::default())
-        .invoke_handler(tauri::generate_handler![
-            fetch_catalog,
-            regions,
-            torbox::torbox_login,
-            torbox::torbox_session,
-            torbox::torbox_logout,
-            torbox::torbox_add,
-            torbox::torbox_list,
-            torbox::torbox_remove,
-            torbox::torbox_download,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running Switch Library");
 }
 
 #[cfg(test)]

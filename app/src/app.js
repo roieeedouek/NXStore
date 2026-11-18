@@ -1,7 +1,6 @@
 // Switch Library frontend. Plain ES module, no build step.
 import { initTorBox, setTorBoxVisible } from "./torbox.js";
-const tauri = window.__TAURI__;
-const invoke = (cmd, args) => tauri.core.invoke(cmd, args);
+import { invoke, listen, openUrl } from "./runtime.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -299,15 +298,11 @@ async function copy(text) {
 }
 
 function openExternal(url) {
-  tauri.opener.openUrl(url).catch((e) => toast(String(e), true));
+  openUrl(url);
 }
 
 // ---------- wiring ----------
 async function init() {
-  if (!tauri) {
-    showEmpty("Run inside the app", "This page needs the Tauri runtime. Start it with `npm run dev`.");
-    return;
-  }
 
   const regions = await invoke("regions").catch(() => ["US.en"]);
   if (!regions.includes(state.region)) state.region = regions[0];
@@ -316,7 +311,7 @@ async function init() {
   $("#sort").value = state.sort;
   $("#hideDemos").checked = state.hideDemos;
 
-  tauri.event.listen("catalog-progress", (e) => onProgress(e.payload));
+  listen("catalog-progress", (e) => onProgress(e.payload));
 
   // Top-level sections: the game library and the TorBox manager.
   const showView = (view) => {

@@ -1,6 +1,5 @@
 // TorBox manager tab: log in with an API key, add links, watch status, download.
-const tauri = window.__TAURI__;
-const invoke = (cmd, args) => tauri.core.invoke(cmd, args);
+import { invoke, listen, openUrl, revealItemInDir } from "./runtime.js";
 const $ = (sel, root = document) => root.querySelector(sel);
 
 const FAST_POLL = 4000;   // while something is still processing on TorBox
@@ -253,16 +252,16 @@ export function initTorBox({ toast }) {
   });
   $("#torboxView").addEventListener("click", (e) => {
     const ext = e.target.closest("[data-ext]");
-    if (ext) return tauri.opener.openUrl(ext.dataset.ext).catch(() => {});
+    if (ext) return openUrl(ext.dataset.ext);
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const t = tb.transfers.find((x) => keyOf(x) === btn.closest(".tb-row").dataset.key);
     if (!t) return;
     if (btn.dataset.act === "download") download(t);
     if (btn.dataset.act === "remove") remove(t, btn);
-    if (btn.dataset.act === "reveal") tauri.opener.revealItemInDir(tb.local.get(keyOf(t)).path).catch((err) => notify(String(err), true));
+    if (btn.dataset.act === "reveal") revealItemInDir(tb.local.get(keyOf(t)).path).catch((err) => notify(String(err), true));
   });
-  tauri.event.listen("torbox-download", (e) => onDownloadEvent(e.payload));
+  listen("torbox-download", (e) => onDownloadEvent(e.payload));
   document.addEventListener("visibilitychange", () => (document.hidden ? clearTimeout(tb.timer) : tb.visible && refresh()));
 
   invoke("torbox_session")
