@@ -204,12 +204,14 @@ fn classify(link: &str) -> Option<Kind> {
 pub struct Added {
     kind: Kind,
     id: Option<u64>,
-    message: Option<String>,
 }
 
 #[tauri::command]
 pub async fn torbox_add(state: State<'_, TorBoxState>, link: String) -> Result<Added, String> {
-    let key = current_key(&state)?;
+    add_link(&current_key(&state)?, &link).await
+}
+
+async fn add_link(key: &str, link: &str) -> Result<Added, String> {
     let link = link.trim().to_string();
     let kind = classify(&link).ok_or("Paste a magnet link or an http(s) URL")?;
     let req = match kind {
@@ -220,12 +222,18 @@ pub async fn torbox_add(state: State<'_, TorBoxState>, link: String) -> Result<A
             .post(format!("{API}/webdl/createwebdownload"))
             .form(&[("link", link)]),
     };
-    let resp = req.bearer_auth(&key).send().await.map_err(|e| format!("Could not reach TorBox: {e}"))?;
-    let data = unwrap_response(resp).await?;
+    let resp = req.bearer_auth(key).send().await.map_err(|e| format!("Could not reach TorBox: {e}"))?;
+    let data = unwrap_response(resp).await.map_err(|e| {
+        if kind == Kind::Web && e.contains("not supported") {
+            format!("{e} TorBox only accepts links from its supported hosts (see torbox.app → Web Downloads).")
+        } else {
+            e
+        }
+    })?;
     let id = ["torrent_id", "webdownload_id", "web_id", "id"]
         .iter()
         .find_map(|k| data.get(*k).and_then(Value::as_u64));
-    Ok(Added { kind, id, message: None })
+    Ok(Added { kind, id })
 }
 
 fn num(v: &Value, k: &str) -> u64 {
@@ -260,9 +268,12 @@ fn to_transfer(kind: Kind, v: &Value) -> Option<Transfer> {
 
 #[tauri::command]
 pub async fn torbox_list(state: State<'_, TorBoxState>) -> Result<Vec<Transfer>, String> {
-    let key = current_key(&state)?;
+    list_transfers(&current_key(&state)?).await
+}
+
+async fn list_transfers(key: &str) -> Result<Vec<Transfer>, String> {
     let q = [("bypass_cache", "true".to_string())];
-    let (t, w) = tokio::join!(get(&key, "torrents/mylist", &q), get(&key, "webdl/mylist", &q));
+    let (t, w) = tokio::join!(get(key, "torrents/mylist", &q), get(key, "webdl/mylist", &q));
     let mut out = Vec::new();
     for (kind, res) in [(Kind::Torrent, t), (Kind::Web, w)] {
         if let Some(items) = res?.as_array() {
@@ -275,19 +286,39 @@ pub async fn torbox_list(state: State<'_, TorBoxState>) -> Result<Vec<Transfer>,
 
 #[tauri::command]
 pub async fn torbox_remove(state: State<'_, TorBoxState>, kind: Kind, id: u64) -> Result<(), String> {
-    let key = current_key(&state)?;
+    remove_item(&current_key(&state)?, kind, id).await
+}
+
+async fn remove_item(key: &str, kind: Kind, id: u64) -> Result<(), String> {
     let (path, id_field) = match kind {
         Kind::Torrent => ("torrents/controltorrent", "torrent_id"),
         Kind::Web => ("webdl/controlwebdownload", "webdl_id"),
     };
     let resp = client()?
         .post(format!("{API}/{path}"))
-        .bearer_auth(&key)
+        .bearer_auth(key)
         .json(&serde_json::json!({ "operation": "delete", id_field: id }))
         .send()
         .await
         .map_err(|e| format!("Could not reach TorBox: {e}"))?;
     unwrap_response(resp).await.map(|_| ())
+}
+
+/// A direct download URL for a finished item; a zip when it has several files.
+async fn request_link(key: &str, kind: Kind, id: u64, file_count: usize) -> Result<String, String> {
+    let id_param = match kind {
+        Kind::Torrent => "torrent_id",
+        Kind::Web => "web_id",
+    };
+    let mut q = vec![("token", key.to_string()), (id_param, id.to_string())];
+    if file_count != 1 {
+        q.push(("zip_link", "true".into()));
+    }
+    get(key, &format!("{}/requestdl", kind.path()), &q)
+        .await?
+        .as_str()
+        .map(str::to_string)
+        .ok_or_else(|| "TorBox did not return a download link".to_string())
 }
 
 fn sanitize(name: &str) -> String {
@@ -336,20 +367,8 @@ pub async fn torbox_download(
         return Err("Already downloading".into());
     }
 
-    let id_param = match kind {
-        Kind::Torrent => "torrent_id",
-        Kind::Web => "web_id",
-    };
-    let mut q = vec![("token", key.clone()), (id_param, id.to_string())];
-    if file_count != 1 {
-        q.push(("zip_link", "true".into()));
-    }
     let result = async {
-        let url = get(&key, &format!("{}/requestdl", kind.path()), &q)
-            .await?
-            .as_str()
-            .map(str::to_string)
-            .ok_or("TorBox did not return a download link")?;
+        let url = request_link(&key, kind, id, file_count).await?;
 
         let resp = client()?
             .get(&url)
@@ -421,6 +440,47 @@ pub async fn torbox_download(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Live round trip against a real account. Run with
+    /// `TORBOX_API_KEY=... cargo test -- --ignored live --nocapture`.
+    /// Adds a small public test file as a web download, waits for it,
+    /// fetches the first bytes of the download link, then removes it.
+    #[tokio::test]
+    #[ignore]
+    async fn live_round_trip() {
+        let key = std::env::var("TORBOX_API_KEY").expect("set TORBOX_API_KEY");
+        let account = fetch_account(&key).await.expect("login");
+        println!("account plan={:?} expires={:?}", account.plan, account.premium_expires_at);
+
+        let link = std::env::var("TORBOX_TEST_LINK")
+            .unwrap_or_else(|_| "https://proof.ovh.net/files/1Mb.dat".to_string());
+        let added = add_link(&key, &link).await.expect("add");
+        println!("added web={} id={:?}", added.kind == Kind::Web, added.id);
+        let id = added.id.expect("id in create response");
+
+        let mut ready = None;
+        for _ in 0..30 {
+            let list = list_transfers(&key).await.expect("list");
+            if let Some(t) = list.iter().find(|t| t.kind == added.kind && t.id == id) {
+                println!("state={} progress={:.2} ready={} files={} size={}", t.state, t.progress, t.ready, t.file_count, t.size);
+                if t.ready {
+                    ready = Some(t.file_count);
+                    break;
+                }
+            }
+            tokio::time::sleep(Duration::from_secs(3)).await;
+        }
+        let file_count = ready.expect("became ready within 90s");
+        let url = request_link(&key, added.kind, id, file_count).await.expect("requestdl");
+        let resp = client().unwrap().get(&url).header("Range", "bytes=0-1023").send().await.expect("fetch");
+        println!("download status={} disposition={:?}", resp.status(), resp.headers().get("content-disposition"));
+        assert!(resp.status().is_success());
+
+        remove_item(&key, added.kind, id).await.expect("remove");
+        let list = list_transfers(&key).await.expect("list after remove");
+        assert!(!list.iter().any(|t| t.kind == added.kind && t.id == id));
+        println!("removed ok");
+    }
 
     #[test]
     fn classifies_links() {
