@@ -9,9 +9,15 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
-      <span class="brand-name">Switch Library</span>
+    <div class="brand-wrap">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+        <span class="brand-name">Switch Library</span>
+      </div>
+      <div class="views" role="tablist" aria-label="Section">
+        <button role="tab" data-view="library" aria-selected="true">Library</button>
+        <button role="tab" data-view="torbox" aria-selected="false">TorBox</button>
+      </div>
     </div>
 
     <label class="search">
@@ -28,6 +34,7 @@
     </div>
   </header>
 
+  <div id="libraryView">
   <nav class="toolbar">
     <div class="segmented" role="tablist" aria-label="Collection filter">
       <button role="tab" data-filter="all" aria-selected="true">All <span class="count" data-count="all">0</span></button>
@@ -61,6 +68,54 @@
       <p></p>
     </div>
   </main>
+  </div>
+
+  <section id="torboxView" class="tb" hidden>
+    <div id="tbLogin" class="panel tb-login">
+      <div class="tb-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>
+      </div>
+      <h2>Connect TorBox</h2>
+      <p>Paste the API key from your TorBox account settings. It's stored on this computer only.</p>
+      <form id="tbLoginForm" class="tb-login-form">
+        <div class="field">
+          <input id="tbKey" type="password" placeholder="API key" autocomplete="off" spellcheck="false" required>
+          <button type="button" id="tbKeyShow" class="field-btn">Show</button>
+        </div>
+        <button type="submit" class="primary-btn">Log in</button>
+      </form>
+      <p id="tbLoginError" class="tb-error" hidden></p>
+      <button type="button" class="link-btn" data-ext="https://torbox.app/settings">Where do I find my API key? ↗</button>
+    </div>
+
+    <div id="tbApp" hidden>
+      <div class="panel tb-account">
+        <div class="tb-avatar" aria-hidden="true"></div>
+        <div class="tb-account-info">
+          <strong id="tbEmail"></strong>
+          <span id="tbPlan"></span>
+        </div>
+        <button id="tbLogout" class="pill-btn ghost">Log out</button>
+      </div>
+
+      <form id="tbAddForm" class="panel tb-add">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+        <input id="tbLink" placeholder="Paste a magnet link or an http(s) URL" autocomplete="off" spellcheck="false">
+        <button type="submit" class="primary-btn">Add</button>
+      </form>
+
+      <div class="tb-list-head">
+        <h3>Transfers</h3>
+        <span id="tbUpdated"></span>
+      </div>
+      <div id="tbList" class="tb-list"></div>
+      <div id="tbEmpty" class="empty" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        <h2>No transfers yet</h2>
+        <p>Add a link above. When TorBox has it ready, a Download button appears here.</p>
+      </div>
+    </div>
+  </section>
 
   <dialog id="detail" class="detail" aria-labelledby="detailTitle">
     <div class="detail-hero">

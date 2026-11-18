@@ -1,4 +1,5 @@
 // Switch Library frontend. Plain ES module, no build step.
+import { initTorBox, setTorBoxVisible } from "./torbox.js";
 const tauri = window.__TAURI__;
 const invoke = (cmd, args) => tauri.core.invoke(cmd, args);
 
@@ -317,6 +318,19 @@ async function init() {
 
   tauri.event.listen("catalog-progress", (e) => onProgress(e.payload));
 
+  // Top-level sections: the game library and the TorBox manager.
+  const showView = (view) => {
+    $$(".views [data-view]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === view)));
+    $("#libraryView").hidden = view !== "library";
+    $("#torboxView").hidden = view !== "torbox";
+    document.body.dataset.view = view;
+    setTorBoxVisible(view === "torbox");
+    save("view", view);
+  };
+  $$(".views [data-view]").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
+  initTorBox({ toast });
+  showView(prefs("view", "library"));
+
   let searchTimer;
   $("#search").addEventListener("input", (e) => {
     clearTimeout(searchTimer);
@@ -376,7 +390,7 @@ async function init() {
       if (e.key === "ArrowRight") openShot(state.shotIndex + 1);
       return;
     }
-    if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && !dlg.open) {
+    if (e.key === "/" && document.body.dataset.view !== "torbox" && document.activeElement?.tagName !== "INPUT" && !dlg.open) {
       e.preventDefault();
       $("#search").focus();
     }

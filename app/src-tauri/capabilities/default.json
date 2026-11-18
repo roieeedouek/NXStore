@@ -7,7 +7,12 @@
     "core:default",
     {
       "identifier": "opener:allow-open-url",
-      "allow": [{ "url": "https://www.nintendo.com/*" }, { "url": "https://github.com/*" }]
+      "allow": [{ "url": "https://www.nintendo.com/*" }, { "url": "https://github.com/*" }, { "url": "https://torbox.app/*" }]
+    },
+    "opener:allow-reveal-item-in-dir",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [{ "path": "$DOWNLOAD/**" }]
     }
   ]
 }

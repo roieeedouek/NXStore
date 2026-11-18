@@ -3,6 +3,8 @@
 //! Downloads the public titledb metadata catalog for a region, slims it down
 //! to the fields the UI needs, and caches the result in the app data folder.
 
+mod torbox;
+
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::time::{Duration, SystemTime};
@@ -253,7 +255,18 @@ pub fn run() {
             }
         }))
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![fetch_catalog, regions])
+        .manage(torbox::TorBoxState::default())
+        .invoke_handler(tauri::generate_handler![
+            fetch_catalog,
+            regions,
+            torbox::torbox_login,
+            torbox::torbox_session,
+            torbox::torbox_logout,
+            torbox::torbox_add,
+            torbox::torbox_list,
+            torbox::torbox_remove,
+            torbox::torbox_download,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running Switch Library");
 }
