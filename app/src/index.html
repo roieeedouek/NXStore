@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch Library</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      <span class="brand-name">Switch Library</span>
+    </div>
+
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Search title, publisher or title ID" autocomplete="off" spellcheck="false">
+      <kbd>/</kbd>
+    </label>
+
+    <div class="topbar-actions">
+      <select id="region" aria-label="Region"></select>
+      <button id="refresh" class="icon-btn" title="Refresh catalog" aria-label="Refresh catalog">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="toolbar">
+    <div class="segmented" role="tablist" aria-label="Collection filter">
+      <button role="tab" data-filter="all" aria-selected="true">All <span class="count" data-count="all">0</span></button>
+      <button role="tab" data-filter="owned" aria-selected="false">Owned <span class="count" data-count="owned">0</span></button>
+      <button role="tab" data-filter="wishlist" aria-selected="false">Wishlist <span class="count" data-count="wishlist">0</span></button>
+    </div>
+
+    <div class="toolbar-right">
+      <label class="check"><input id="hideDemos" type="checkbox" checked> Hide demos</label>
+      <select id="sort" aria-label="Sort">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="title">Title A–Z</option>
+        <option value="publisher">Publisher</option>
+      </select>
+    </div>
+  </nav>
+
+  <div id="progress" class="progress" hidden>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-label"></span>
+  </div>
+
+  <main>
+    <p id="summary" class="summary"></p>
+    <section id="grid" class="grid" aria-live="polite"></section>
+    <div id="sentinel" aria-hidden="true"></div>
+    <div id="empty" class="empty" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <h2></h2>
+      <p></p>
+    </div>
+  </main>
+
+  <dialog id="detail" class="detail" aria-labelledby="detailTitle">
+    <div class="detail-hero">
+      <img class="detail-banner" alt="">
+      <button class="detail-close icon-btn" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="detail-head">
+      <img class="detail-icon" alt="">
+      <div class="detail-heading">
+        <h2 id="detailTitle"></h2>
+        <p class="detail-sub"></p>
+        <div class="detail-actions">
+          <button class="pill-btn" data-toggle="owned"></button>
+          <button class="pill-btn" data-toggle="wishlist"></button>
+          <button class="pill-btn ghost" data-eshop>View on eShop ↗</button>
+        </div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <dl class="facts"></dl>
+      <div class="chips"></div>
+      <div class="shots"></div>
+      <div class="description"></div>
+    </div>
+  </dialog>
+
+  <div id="lightbox" class="lightbox" hidden>
+    <button class="lb-nav prev" aria-label="Previous screenshot">‹</button>
+    <img alt="">
+    <button class="lb-nav next" aria-label="Next screenshot">›</button>
+    <span class="lb-count"></span>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</body>
+</html>
